@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getArenaById, getCourts, getEquipment, getArenaReviews, createReview } from '../api/services';
+import { getArenaById, getCourts, getEquipment, getArenaReviews, createReview, createRental } from '../api/services';
 import { googleMapsDirectionsUrl, mediaUrl } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import StarRating from '../components/StarRating';
@@ -17,6 +17,14 @@ const ArenaDetails = () => {
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
   const [reviewError, setReviewError] = useState('');
   const [loading, setLoading] = useState(true);
+
+  // Equipment rental modal state
+  const [selectedEquipment, setSelectedEquipment] = useState(null);
+  const [rentalQuantity, setRentalQuantity] = useState(1);
+  const [rentalDuration, setRentalDuration] = useState(2);
+  const [rentalLoading, setRentalLoading] = useState(false);
+  const [rentalSuccess, setRentalSuccess] = useState('');
+  const [rentalError, setRentalError] = useState('');
 
   const loadReviews = () => getArenaReviews(id).then(({ data }) => setReviews(data));
 
@@ -45,6 +53,47 @@ const ArenaDetails = () => {
       await loadReviews();
     } catch (err) {
       setReviewError(err.response?.data?.message || 'Could not submit review');
+    }
+  };
+
+  const handleOpenRental = (item) => {
+    if (!user) {
+      return navigate('/login', { state: { from: `/arena/${id}` } });
+    }
+    setSelectedEquipment(item);
+    setRentalQuantity(1);
+    setRentalDuration(2);
+    setRentalError('');
+    setRentalSuccess('');
+  };
+
+  const handleConfirmRental = async (e) => {
+    e.preventDefault();
+    if (!selectedEquipment) return;
+    setRentalLoading(true);
+    setRentalError('');
+    setRentalSuccess('');
+
+    try {
+      const returnDate = new Date(Date.now() + Number(rentalDuration) * 3600 * 1000).toISOString();
+      await createRental({
+        equipmentId: selectedEquipment._id,
+        quantity: Number(rentalQuantity),
+        rentalDuration: Number(rentalDuration),
+        returnDate,
+      });
+
+      setRentalSuccess(`Rented ${rentalQuantity} × ${selectedEquipment.name} successfully!`);
+      const { data: updatedEquipment } = await getEquipment({ arenaId: id });
+      setEquipment(updatedEquipment);
+      setTimeout(() => {
+        setSelectedEquipment(null);
+        setRentalSuccess('');
+      }, 2000);
+    } catch (err) {
+      setRentalError(err.response?.data?.message || 'Failed to rent equipment');
+    } finally {
+      setRentalLoading(false);
     }
   };
 
@@ -130,10 +179,27 @@ const ArenaDetails = () => {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
             {equipment.map((item) => (
-              <div key={item._id} className="rounded-xl border border-court-line bg-white p-4">
-                <p className="font-semibold text-sm">{item.name}</p>
-                <p className="text-xs text-court-ink/50 capitalize mt-0.5">{item.condition} · {item.quantity} in stock</p>
-                <p className="mt-2 font-display font-bold text-court-primary text-sm">₹{item.pricePerHour}/hr</p>
+              <div
+                key={item._id}
+                className="rounded-xl border border-court-line bg-white p-4 flex flex-col justify-between hover:border-court-primary/50 transition-colors shadow-xs"
+              >
+                <div>
+                  <p className="font-semibold text-sm">{item.name}</p>
+                  <p className="text-xs text-court-ink/50 capitalize mt-0.5">{item.condition} · {item.quantity} in stock</p>
+                  <p className="mt-2 font-display font-bold text-court-primary text-sm">₹{item.pricePerHour}/hr</p>
+                </div>
+                {item.quantity > 0 ? (
+                  <button
+                    onClick={() => handleOpenRental(item)}
+                    className="mt-4 w-full py-2 rounded-lg bg-court-accent text-court-primary-dark text-xs font-semibold hover:bg-court-accent-dark transition-colors"
+                  >
+                    Rent equipment
+                  </button>
+                ) : (
+                  <span className="mt-4 block text-center py-2 text-xs text-court-ink/40 font-medium bg-court-ink/5 rounded-lg">
+                    Out of stock
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -191,6 +257,100 @@ const ArenaDetails = () => {
           )}
         </div>
       </section>
+
+      {/* Equipment Rental Modal */}
+      {selectedEquipment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-court-line relative text-court-ink">
+            <button
+              onClick={() => setSelectedEquipment(null)}
+              className="absolute top-4 right-4 text-court-ink/40 hover:text-court-ink text-lg font-bold"
+            >
+              ✕
+            </button>
+            <h3 className="font-display font-bold text-xl text-court-primary-dark">Rent {selectedEquipment.name}</h3>
+            <p className="text-xs text-court-ink/60 mt-0.5">{arena.name} · {selectedEquipment.condition} condition</p>
+
+            {rentalSuccess ? (
+              <div className="mt-5 p-4 rounded-xl bg-court-primary/10 border border-court-primary/30 text-center">
+                <p className="text-sm font-semibold text-court-primary">✓ {rentalSuccess}</p>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="mt-3 px-5 py-2 rounded-full bg-court-primary text-white text-xs font-semibold hover:bg-court-primary-dark transition-colors"
+                >
+                  View my rentals in Dashboard
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleConfirmRental} className="mt-4 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-court-ink/70 mb-1">
+                    Quantity (Available: {selectedEquipment.quantity})
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max={selectedEquipment.quantity}
+                    value={rentalQuantity}
+                    onChange={(e) => setRentalQuantity(Math.max(1, Math.min(selectedEquipment.quantity, Number(e.target.value))))}
+                    className="w-full px-3 py-2 rounded-lg border border-court-line text-sm"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-court-ink/70 mb-1">Rental Duration</label>
+                  <select
+                    value={rentalDuration}
+                    onChange={(e) => setRentalDuration(Number(e.target.value))}
+                    className="w-full px-3 py-2 rounded-lg border border-court-line text-sm"
+                  >
+                    {[1, 2, 3, 4, 6, 8, 12, 24].map((hr) => (
+                      <option key={hr} value={hr}>{hr} hour{hr > 1 ? 's' : ''}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="p-3 rounded-xl bg-court-primary/5 border border-court-line text-xs space-y-1.5">
+                  <div className="flex justify-between text-court-ink/70">
+                    <span>Rate</span>
+                    <span>₹{selectedEquipment.pricePerHour}/hr × {rentalQuantity}</span>
+                  </div>
+                  <div className="flex justify-between text-court-ink/70">
+                    <span>Deposit (refundable on return)</span>
+                    <span className="font-semibold text-court-primary">₹{selectedEquipment.pricePerHour * rentalQuantity}</span>
+                  </div>
+                  <div className="flex justify-between font-bold pt-1.5 border-t border-court-line text-court-primary-dark text-sm">
+                    <span>Total Deposit Due</span>
+                    <span>₹{selectedEquipment.pricePerHour * rentalQuantity}</span>
+                  </div>
+                </div>
+
+                {rentalError && (
+                  <p className="text-xs text-court-danger">{rentalError}</p>
+                )}
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedEquipment(null)}
+                    className="flex-1 py-2.5 rounded-full border border-court-line text-sm font-medium hover:bg-court-ink/5 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={rentalLoading}
+                    className="flex-1 py-2.5 rounded-full bg-court-accent text-court-primary-dark font-semibold text-sm hover:bg-court-accent-dark transition-colors disabled:opacity-50"
+                  >
+                    {rentalLoading ? 'Processing…' : 'Confirm rental'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
