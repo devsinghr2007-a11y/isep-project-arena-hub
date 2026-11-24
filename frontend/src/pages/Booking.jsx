@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getArenaById, getCourts, createBooking, createCashfreeOrder, verifyCashfreePayment } from '../api/services';
+import {
+  getArenaById,
+  getCourts,
+  createBooking,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
+  createCashfreeOrder,
+  verifyCashfreePayment,
+} from '../api/services';
 import { useAuth } from '../context/AuthContext';
 
 const Booking = () => {
@@ -49,24 +57,83 @@ const Booking = () => {
       }
 
       setStatus('paying');
-      const { data: orderData } = await createCashfreeOrder({ bookingId: activeBooking._id });
-      if (!window.Cashfree) throw new Error('Cashfree Checkout did not load. Check your internet connection and try again.');
 
-      const cashfree = window.Cashfree({ mode: orderData.environment });
-      await cashfree.checkout({
-        paymentSessionId: orderData.paymentSessionId,
-        redirectTarget: '_modal',
-      });
-
+      // 1. Try Razorpay checkout
       try {
-        await verifyCashfreePayment({ bookingId: activeBooking._id });
-        setStatus('confirmed');
-      } catch (verificationError) {
-        setError(verificationError.response?.data?.message || 'Payment was not completed. You can try again.');
-        setStatus('idle');
+        const { data: orderData } = await createRazorpayOrder({ bookingId: activeBooking._id });
+
+        if (!window.Razorpay) {
+          throw new Error('Razorpay Checkout SDK is not loaded. Please check your internet connection.');
+        }
+
+        const options = {
+          key: orderData.keyId,
+          amount: orderData.amount,
+          currency: orderData.currency || 'INR',
+          name: 'ArenaHub',
+          description: `Booking for ${court.name} at ${arena.name}`,
+          order_id: orderData.orderId,
+          handler: async function (response) {
+            try {
+              await verifyRazorpayPayment({
+                bookingId: activeBooking._id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              });
+              setStatus('confirmed');
+            } catch (verificationError) {
+              setError(verificationError.response?.data?.message || 'Payment verification failed.');
+              setStatus('idle');
+            }
+          },
+          prefill: {
+            name: user?.name || '',
+            email: user?.email || '',
+            contact: user?.phone || '',
+          },
+          theme: {
+            color: '#10b981',
+          },
+          modal: {
+            ondismiss: function () {
+              setStatus('idle');
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (resp) {
+          setError(resp.error?.description || 'Payment failed. Please try again.');
+          setStatus('idle');
+        });
+        rzp.open();
+        return;
+      } catch (rzpErr) {
+        // Fallback to Cashfree if Razorpay is unavailable or not configured
+        const isNotConfigured = rzpErr.response?.status === 503;
+        if (isNotConfigured && window.Cashfree) {
+          const { data: orderData } = await createCashfreeOrder({ bookingId: activeBooking._id });
+          const cashfree = window.Cashfree({ mode: orderData.environment });
+          await cashfree.checkout({
+            paymentSessionId: orderData.paymentSessionId,
+            redirectTarget: '_modal',
+          });
+
+          try {
+            await verifyCashfreePayment({ bookingId: activeBooking._id });
+            setStatus('confirmed');
+            return;
+          } catch (verificationError) {
+            setError(verificationError.response?.data?.message || 'Payment was not completed. You can try again.');
+            setStatus('idle');
+            return;
+          }
+        }
+        throw rzpErr;
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Booking failed');
+      setError(err.response?.data?.message || err.message || 'Booking failed');
       setStatus('idle');
     }
   };
@@ -134,7 +201,7 @@ const Booking = () => {
         disabled={!selectedSlot || status === 'booking' || status === 'paying'}
         className="mt-8 w-full sm:w-auto px-8 py-3.5 rounded-full bg-court-accent text-court-primary-dark font-semibold hover:bg-court-accent-dark transition-colors disabled:opacity-50"
       >
-        {status === 'booking' ? 'Reserving slot…' : status === 'paying' ? 'Opening Cashfree…' : `Confirm & pay ₹${court.pricePerHour}`}
+        {status === 'booking' ? 'Reserving slot…' : status === 'paying' ? 'Opening payment gateway…' : `Confirm & pay ₹${court.pricePerHour}`}
       </button>
     </div>
   );

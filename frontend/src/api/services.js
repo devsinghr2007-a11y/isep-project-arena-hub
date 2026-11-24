@@ -27,6 +27,10 @@ export const createEquipment = (data) => client.post('/equipment', data);
 export const createBooking = (data) => client.post('/booking', data);
 export const getBookings = () => client.get('/booking');
 
+// Razorpay payment gateway
+export const createRazorpayOrder = (data) => client.post('/payment/razorpay/order', data);
+export const verifyRazorpayPayment = (data) => client.post('/payment/razorpay/verify', data);
+
 // Cashfree payment gateway
 export const createCashfreeOrder = (data) => client.post('/payment/order', data);
 export const verifyCashfreePayment = (data) => client.post('/payment/verify', data);

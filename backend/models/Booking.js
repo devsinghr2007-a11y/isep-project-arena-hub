@@ -14,9 +14,12 @@ const bookingSchema = new mongoose.Schema(
       default: 'pending',
     },
     paymentId: { type: String }, // confirmed gateway payment or order reference
-    paymentGateway: { type: String, enum: ['cashfree'] },
+    paymentGateway: { type: String, enum: ['cashfree', 'razorpay'] },
     cashfreeOrderId: { type: String, sparse: true, index: true },
     cashfreePaymentSessionId: { type: String },
+    razorpayOrderId: { type: String, sparse: true, index: true },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String },
   },
   { timestamps: true }
 );

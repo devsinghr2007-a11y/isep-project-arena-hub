@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const Razorpay = require('razorpay');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
 
@@ -239,4 +240,104 @@ const cashfreeWebhook = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, verifyPayment, cashfreeWebhook };
+// ==================== RAZORPAY INTEGRATION ====================
+
+const getRazorpayInstance = () => {
+  const key_id = process.env.RAZORPAY_KEY_ID?.trim();
+  const key_secret = process.env.RAZORPAY_KEY_SECRET?.trim();
+  if (!key_id || !key_secret) {
+    const error = new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env.');
+    error.statusCode = 503;
+    throw error;
+  }
+  return new Razorpay({ key_id, key_secret });
+};
+
+// POST /payment/razorpay/order
+const createRazorpayOrder = async (req, res) => {
+  try {
+    const { bookingId } = req.body;
+    const booking = await ownedBooking(bookingId, req.user.id);
+    if (booking.status !== 'pending') {
+      return res.status(409).json({ message: 'This booking is no longer awaiting payment.' });
+    }
+
+    const razorpay = getRazorpayInstance();
+    const amountInPaise = Math.round(booking.amount * 100);
+
+    const order = await razorpay.orders.create({
+      amount: amountInPaise,
+      currency: 'INR',
+      receipt: `rcpt_${booking._id.toString().slice(-10)}`,
+      notes: {
+        bookingId: booking._id.toString(),
+        userId: req.user.id,
+      },
+    });
+
+    booking.razorpayOrderId = order.id;
+    booking.paymentGateway = 'razorpay';
+    await booking.save();
+
+    return res.json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: process.env.RAZORPAY_KEY_ID?.trim(),
+      bookingId: booking._id,
+    });
+  } catch (err) {
+    console.error('[Razorpay createOrder error]', err);
+    return res.status(err.statusCode || 500).json({
+      message: err.statusCode ? err.message : 'Failed to create Razorpay payment order.',
+    });
+  }
+};
+
+// POST /payment/razorpay/verify
+const verifyRazorpayPayment = async (req, res) => {
+  try {
+    const { bookingId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const booking = await ownedBooking(bookingId, req.user.id);
+
+    if (booking.status === 'confirmed') {
+      return res.json({ message: 'Payment already verified.', booking });
+    }
+
+    const key_secret = process.env.RAZORPAY_KEY_SECRET?.trim();
+    if (!key_secret) {
+      return res.status(503).json({ message: 'Razorpay secret key is not configured.' });
+    }
+
+    const expectedSignature = crypto
+      .createHmac('sha256', key_secret)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest('hex');
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ message: 'Invalid payment signature. Verification failed.' });
+    }
+
+    booking.status = 'confirmed';
+    booking.paymentGateway = 'razorpay';
+    booking.paymentId = razorpay_payment_id;
+    booking.razorpayPaymentId = razorpay_payment_id;
+    booking.razorpaySignature = razorpay_signature;
+    await booking.save();
+
+    return res.json({ message: 'Razorpay payment verified successfully.', booking });
+  } catch (err) {
+    console.error('[Razorpay verifyPayment error]', err);
+    return res.status(err.statusCode || 500).json({
+      message: err.statusCode ? err.message : 'Razorpay payment verification failed.',
+    });
+  }
+};
+
+module.exports = {
+  createOrder,
+  verifyPayment,
+  cashfreeWebhook,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
+};
