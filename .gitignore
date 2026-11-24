@@ -1,0 +1,9 @@
+# Local secrets
+backend/.env
+frontend/.env
+
+# Dependencies and generated files
+backend/node_modules/
+frontend/node_modules/
+backend/uploads/
+frontend/dist/

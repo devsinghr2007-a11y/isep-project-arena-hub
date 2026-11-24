@@ -1,0 +1,231 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.12.1
+2 info using node@v24.15.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Devi Singh\Downloads\arenahub\backend\.npmrc
+5 silly config load:file:C:\Users\Devi Singh\.npmrc
+6 silly config load:file:C:\Users\Devi Singh\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install nodemailer twilio
+8 verbose argv "install" "nodemailer" "twilio"
+9 verbose logfile logs-max:10 dir:C:\Users\Devi Singh\Downloads\arenahub\backend\.npm-cache\_logs\2026-08-16T19_06_18_959Z-
+10 verbose logfile C:\Users\Devi Singh\Downloads\arenahub\backend\.npm-cache\_logs\2026-08-16T19_06_18_959Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:2348810240 maxSize:587202560 maxEntrySize:293601280
+13 silly idealTree buildDeps
+14 silly fetch manifest nodemailer@*
+15 silly packumentCache full:https://registry.npmjs.org/nodemailer cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/nodemailer 398ms (cache miss)
+17 silly packumentCache full:https://registry.npmjs.org/nodemailer set size:undefined disposed:false
+18 silly fetch manifest twilio@*
+19 silly packumentCache full:https://registry.npmjs.org/twilio cache-miss
+20 http fetch GET 200 https://registry.npmjs.org/npm 581ms
+21 http fetch GET 200 https://registry.npmjs.org/twilio 393ms (cache miss)
+22 silly packumentCache full:https://registry.npmjs.org/twilio set size:undefined disposed:false
+23 silly placeDep ROOT nodemailer@9.0.5 OK for: arenahub-backend@1.0.0 want: *
+24 silly placeDep ROOT twilio@6.1.0 OK for: arenahub-backend@1.0.0 want: *
+25 silly fetch manifest scmp@^2.1.0
+26 silly packumentCache full:https://registry.npmjs.org/scmp cache-miss
+27 silly fetch manifest dayjs@^1.11.9
+28 silly packumentCache full:https://registry.npmjs.org/dayjs cache-miss
+29 silly fetch manifest xmlbuilder@^13.0.2
+30 silly packumentCache full:https://registry.npmjs.org/xmlbuilder cache-miss
+31 http fetch GET 200 https://registry.npmjs.org/scmp 325ms (cache miss)
+32 silly packumentCache full:https://registry.npmjs.org/scmp set size:undefined disposed:false
+33 http fetch GET 200 https://registry.npmjs.org/dayjs 328ms (cache miss)
+34 silly packumentCache full:https://registry.npmjs.org/dayjs set size:undefined disposed:false
+35 http fetch GET 200 https://registry.npmjs.org/xmlbuilder 884ms (cache miss)
+36 silly packumentCache full:https://registry.npmjs.org/xmlbuilder set size:undefined disposed:false
+37 silly placeDep ROOT dayjs@1.11.22 OK for: twilio@6.1.0 want: ^1.11.9
+38 silly placeDep ROOT scmp@2.1.0 OK for: twilio@6.1.0 want: ^2.1.0
+39 silly placeDep ROOT xmlbuilder@13.0.2 OK for: twilio@6.1.0 want: ^13.0.2
+40 silly reify moves {}
+41 silly audit bulk request {
+41 silly audit   '@mongodb-js/saslprep': [ '1.4.13' ],
+41 silly audit   '@types/webidl-conversions': [ '7.0.3' ],
+41 silly audit   '@types/whatwg-url': [ '11.0.5' ],
+41 silly audit   accepts: [ '1.3.8' ],
+41 silly audit   'agent-base': [ '6.0.2' ],
+41 silly audit   debug: [ '4.4.3', '2.6.9' ],
+41 silly audit   ms: [ '2.1.3', '2.0.0' ],
+41 silly audit   anymatch: [ '3.1.3' ],
+41 silly audit   'append-field': [ '1.0.0' ],
+41 silly audit   'array-flatten': [ '1.1.1' ],
+41 silly audit   asynckit: [ '0.4.0' ],
+41 silly audit   axios: [ '1.19.0' ],
+41 silly audit   'balanced-match': [ '4.0.4' ],
+41 silly audit   bcryptjs: [ '2.4.3' ],
+41 silly audit   'binary-extensions': [ '2.3.0' ],
+41 silly audit   'body-parser': [ '1.20.6' ],
+41 silly audit   'brace-expansion': [ '5.0.9' ],
+41 silly audit   braces: [ '3.0.3' ],
+41 silly audit   bson: [ '6.10.4' ],
+41 silly audit   'buffer-equal-constant-time': [ '1.0.1' ],
+41 silly audit   'buffer-from': [ '1.1.2' ],
+41 silly audit   busboy: [ '1.6.0' ],
+41 silly audit   bytes: [ '3.1.2' ],
+41 silly audit   'call-bind-apply-helpers': [ '1.0.2' ],
+41 silly audit   'call-bound': [ '1.0.4' ],
+41 silly audit   chokidar: [ '3.6.0' ],
+41 silly audit   'combined-stream': [ '1.0.8' ],
+41 silly audit   'concat-stream': [ '2.0.0' ],
+41 silly audit   'content-disposition': [ '0.5.4' ],
+41 silly audit   'content-type': [ '1.0.5' ],
+41 silly audit   cookie: [ '0.7.2' ],
+41 silly audit   'cookie-signature': [ '1.0.7' ],
+41 silly audit   cors: [ '2.8.6' ],
+41 silly audit   'delayed-stream': [ '1.0.0' ],
+41 silly audit   depd: [ '2.0.0' ],
+41 silly audit   destroy: [ '1.2.0' ],
+41 silly audit   dotenv: [ '16.6.1' ],
+41 silly audit   'dunder-proto': [ '1.0.1' ],
+41 silly audit   'ecdsa-sig-formatter': [ '1.0.11' ],
+41 silly audit   'ee-first': [ '1.1.1' ],
+41 silly audit   encodeurl: [ '2.0.0' ],
+41 silly audit   'es-define-property': [ '1.0.1' ],
+41 silly audit   'es-errors': [ '1.3.0' ],
+41 silly audit   'es-object-atoms': [ '1.1.2' ],
+41 silly audit   'es-set-tostringtag': [ '2.1.0' ],
+41 silly audit   'escape-html': [ '1.0.3' ],
+41 silly audit   etag: [ '1.8.1' ],
+41 silly audit   express: [ '4.22.2' ],
+41 silly audit   'fill-range': [ '7.1.1' ],
+41 silly audit   finalhandler: [ '1.3.2' ],
+41 silly audit   'follow-redirects': [ '1.16.0' ],
+41 silly audit   'form-data': [ '4.0.6' ],
+41 silly audit   forwarded: [ '0.2.0' ],
+41 silly audit   fresh: [ '0.5.2' ],
+41 silly audit   fsevents: [ '2.3.3' ],
+41 silly audit   'function-bind': [ '1.1.2' ],
+41 silly audit   'get-intrinsic': [ '1.3.0' ],
+41 silly audit   'get-proto': [ '1.0.1' ],
+41 silly audit   'glob-parent': [ '5.1.2' ],
+41 silly audit   gopd: [ '1.2.0' ],
+41 silly audit   'has-flag': [ '3.0.0' ],
+41 silly audit   'has-symbols': [ '1.1.0' ],
+41 silly audit   'has-tostringtag': [ '1.0.2' ],
+41 silly audit   hasown: [ '2.0.4' ],
+41 silly audit   'http-errors': [ '2.0.1' ],
+41 silly audit   'https-proxy-agent': [ '5.0.1' ],
+41 silly audit   'iconv-lite': [ '0.4.24' ],
+41 silly audit   'ignore-by-default': [ '1.0.1' ],
+41 silly audit   inherits: [ '2.0.4' ],
+41 silly audit   'ipaddr.js': [ '1.9.1' ],
+41 silly audit   'is-binary-path': [ '2.1.0' ],
+41 silly audit   'is-extglob': [ '2.1.1' ],
+41 silly audit   'is-glob': [ '4.0.3' ],
+41 silly audit   'is-number': [ '7.0.0' ],
+41 silly audit   jsonwebtoken: [ '9.0.3' ],
+41 silly audit   jwa: [ '2.0.1' ],
+41 silly audit   jws: [ '4.0.1' ],
+41 silly audit   kareem: [ '2.6.3' ],
+41 silly audit   'lodash.includes': [ '4.3.0' ],
+41 silly audit   'lodash.isboolean': [ '3.0.3' ],
+41 silly audit   'lodash.isinteger': [ '4.0.4' ],
+41 silly audit   'lodash.isnumber': [ '3.0.3' ],
+41 silly audit   'lodash.isplainobject': [ '4.0.6' ],
+41 silly audit   'lodash.isstring': [ '4.0.1' ],
+41 silly audit   'lodash.once': [ '4.1.1' ],
+41 silly audit   'math-intrinsics': [ '1.1.0' ],
+41 silly audit   'media-typer': [ '0.3.0' ],
+41 silly audit   'memory-pager': [ '1.5.0' ],
+41 silly audit   'merge-descriptors': [ '1.0.3' ],
+41 silly audit   methods: [ '1.1.2' ],
+41 silly audit   mime: [ '1.6.0' ],
+41 silly audit   'mime-db': [ '1.52.0' ],
+41 silly audit   'mime-types': [ '2.1.35' ],
+41 silly audit   minimatch: [ '10.2.6' ],
+41 silly audit   mongodb: [ '6.20.0' ],
+41 silly audit   'mongodb-connection-string-url': [ '3.0.2' ],
+41 silly audit   mongoose: [ '8.24.2' ],
+41 silly audit   mpath: [ '0.9.0' ],
+41 silly audit   mquery: [ '5.0.0' ],
+41 silly audit   multer: [ '2.2.0' ],
+41 silly audit   negotiator: [ '0.6.3' ],
+41 silly audit   nodemon: [ '3.1.14' ],
+41 silly audit   'normalize-path': [ '3.0.0' ],
+41 silly audit   'object-assign': [ '4.1.1' ],
+41 silly audit   'object-inspect': [ '1.13.4' ],
+41 silly audit   'on-finished': [ '2.4.1' ],
+41 silly audit   parseurl: [ '1.3.3' ],
+41 silly audit   'path-to-regexp': [ '0.1.13' ],
+41 silly audit   picomatch: [ '2.3.2' ],
+41 silly audit   'proxy-addr': [ '2.0.7' ],
+41 silly audit   'proxy-from-env': [ '2.1.0' ],
+41 silly audit   'pstree.remy': [ '1.1.8' ],
+41 silly audit   punycode: [ '2.3.1' ],
+41 silly audit   qs: [ '6.15.3' ],
+41 silly audit   'range-parser': [ '1.2.1' ],
+41 silly audit   'raw-body': [ '2.5.3' ],
+41 silly audit   razorpay: [ '2.9.8' ],
+41 silly audit   'readable-stream': [ '3.6.2' ],
+41 silly audit   readdirp: [ '3.6.0' ],
+41 silly audit   'safe-buffer': [ '5.2.1' ],
+41 silly audit   'safer-buffer': [ '2.1.2' ],
+41 silly audit   semver: [ '7.8.5' ],
+41 silly audit   send: [ '0.19.2' ],
+41 silly audit   'serve-static': [ '1.16.3' ],
+41 silly audit   setprototypeof: [ '1.2.0' ],
+41 silly audit   'side-channel': [ '1.1.1' ],
+41 silly audit   'side-channel-list': [ '1.0.1' ],
+41 silly audit   'side-channel-map': [ '1.0.1' ],
+41 silly audit   'side-channel-weakmap': [ '1.0.2' ],
+41 silly audit   sift: [ '17.1.3' ],
+41 silly audit   'simple-update-notifier': [ '2.0.0' ],
+41 silly audit   'sparse-bitfield': [ '3.0.3' ],
+41 silly audit   statuses: [ '2.0.2' ],
+41 silly audit   streamsearch: [ '1.1.0' ],
+41 silly audit   string_decoder: [ '1.3.0' ],
+41 silly audit   'supports-color': [ '5.5.0' ],
+41 silly audit   'to-regex-range': [ '5.0.1' ],
+41 silly audit   toidentifier: [ '1.0.1' ],
+41 silly audit   touch: [ '3.1.1' ],
+41 silly audit   tr46: [ '5.1.1' ],
+41 silly audit   'type-is': [ '1.6.18' ],
+41 silly audit   typedarray: [ '0.0.6' ],
+41 silly audit   undefsafe: [ '2.0.5' ],
+41 silly audit   unpipe: [ '1.0.0' ],
+41 silly audit   'util-deprecate': [ '1.0.2' ],
+41 silly audit   'utils-merge': [ '1.0.1' ],
+41 silly audit   vary: [ '1.1.2' ],
+41 silly audit   'webidl-conversions': [ '7.0.0' ],
+41 silly audit   'whatwg-url': [ '14.2.0' ],
+41 silly audit   nodemailer: [ '9.0.5' ],
+41 silly audit   twilio: [ '6.1.0' ],
+41 silly audit   dayjs: [ '1.11.22' ],
+41 silly audit   scmp: [ '2.1.0' ],
+41 silly audit   xmlbuilder: [ '13.0.2' ]
+41 silly audit }
+42 http cache scmp@https://registry.npmjs.org/scmp/-/scmp-2.1.0.tgz 0ms (cache hit)
+43 http cache dayjs@https://registry.npmjs.org/dayjs/-/dayjs-1.11.22.tgz 0ms (cache hit)
+44 http cache xmlbuilder@https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-13.0.2.tgz 0ms (cache hit)
+45 silly tarball no local data for scmp@https://registry.npmjs.org/scmp/-/scmp-2.1.0.tgz. Extracting by manifest.
+46 http cache twilio@https://registry.npmjs.org/twilio/-/twilio-6.1.0.tgz 0ms (cache hit)
+47 http cache nodemailer@https://registry.npmjs.org/nodemailer/-/nodemailer-9.0.5.tgz 0ms (cache hit)
+48 silly tarball no local data for dayjs@https://registry.npmjs.org/dayjs/-/dayjs-1.11.22.tgz. Extracting by manifest.
+49 silly tarball no local data for xmlbuilder@https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-13.0.2.tgz. Extracting by manifest.
+50 silly tarball no local data for twilio@https://registry.npmjs.org/twilio/-/twilio-6.1.0.tgz. Extracting by manifest.
+51 silly tarball no local data for nodemailer@https://registry.npmjs.org/nodemailer/-/nodemailer-9.0.5.tgz. Extracting by manifest.
+52 http fetch GET 200 https://registry.npmjs.org/scmp/-/scmp-2.1.0.tgz 172ms (cache miss)
+53 warn deprecated scmp@2.1.0: Just use Node.js's crypto.timingSafeEqual()
+54 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 261ms
+55 silly audit report {}
+56 http fetch GET 200 https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-13.0.2.tgz 843ms (cache miss)
+57 http fetch GET 200 https://registry.npmjs.org/nodemailer/-/nodemailer-9.0.5.tgz 1501ms (cache miss)
+58 http fetch GET 200 https://registry.npmjs.org/dayjs/-/dayjs-1.11.22.tgz 2262ms (cache miss)
+59 http fetch GET 200 https://registry.npmjs.org/twilio/-/twilio-6.1.0.tgz 12058ms (cache miss)
+60 silly ADD node_modules/xmlbuilder
+61 silly ADD node_modules/scmp
+62 silly ADD node_modules/dayjs
+63 silly ADD node_modules/twilio
+64 silly ADD node_modules/nodemailer
+65 verbose cwd C:\Users\Devi Singh\Downloads\arenahub\backend
+66 verbose os Windows_NT 10.0.26200
+67 verbose node v24.15.0
+68 verbose npm  v11.12.1
+69 notice
+69 notice New major version of npm available! 11.12.1 -> 12.0.2
+69 notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+69 notice To update run: npm install -g npm@12.0.2
+69 notice  { force: true, Symbol(proc-log.meta): true }
+70 verbose exit 0
+71 info ok
