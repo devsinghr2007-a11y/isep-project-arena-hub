@@ -167,7 +167,10 @@ const Booking = () => {
       <div className="mt-8">
         <h2 className="font-display font-semibold text-lg mb-3">Choose a slot</h2>
         {Object.keys(slotsByDate).length === 0 ? (
-          <p className="text-sm text-court-ink/50">No open slots right now.</p>
+          <div className="p-4 rounded-xl border border-court-line bg-court-ink/5">
+            <p className="text-sm font-medium text-court-ink/70">No open slots are available for this court right now.</p>
+            <p className="text-xs text-court-ink/50 mt-1">Please check back later or choose another court.</p>
+          </div>
         ) : (
           <div className="space-y-5">
             {Object.entries(slotsByDate).map(([date, slots]) => (
@@ -199,9 +202,17 @@ const Booking = () => {
       <button
         onClick={handleConfirm}
         disabled={!selectedSlot || status === 'booking' || status === 'paying'}
-        className="mt-8 w-full sm:w-auto px-8 py-3.5 rounded-full bg-court-accent text-court-primary-dark font-semibold hover:bg-court-accent-dark transition-colors disabled:opacity-50"
+        className="mt-8 w-full sm:w-auto px-8 py-3.5 rounded-full bg-court-accent text-court-primary-dark font-semibold hover:bg-court-accent-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {status === 'booking' ? 'Reserving slot…' : status === 'paying' ? 'Opening payment gateway…' : `Confirm & pay ₹${court.pricePerHour}`}
+        {status === 'booking'
+          ? 'Reserving slot…'
+          : status === 'paying'
+          ? 'Opening payment gateway…'
+          : openSlots.length === 0
+          ? 'No slots available'
+          : !selectedSlot
+          ? 'Select a slot above to pay'
+          : `Confirm & pay ₹${court.pricePerHour} (${selectedSlot.date} · ${selectedSlot.time})`}
       </button>
     </div>
   );

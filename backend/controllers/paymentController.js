@@ -288,8 +288,11 @@ const createRazorpayOrder = async (req, res) => {
     });
   } catch (err) {
     console.error('[Razorpay createOrder error]', err);
+    const desc = err.error?.description || err.message || 'Failed to create Razorpay payment order.';
     return res.status(err.statusCode || 500).json({
-      message: err.statusCode ? err.message : 'Failed to create Razorpay payment order.',
+      message: desc.toLowerCase().includes('authentication')
+        ? 'Razorpay authentication failed: Please verify your RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in backend/.env.'
+        : desc,
     });
   }
 };
